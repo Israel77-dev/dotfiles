@@ -18,9 +18,9 @@ These are the software that I use on a daily basis, some of them are configured 
 |       Text Editor       |                                    [Vim](https://www.vim.org/)                                    |
 |           IDE           |                             [VSCode](https://code.visualstudio.com/)                              |
 |       Web Browser       |           [Firefox Developer Edition](https://www.mozilla.org/pt-BR/firefox/developer)            |
-|        Launcher*        |                            [Rofi](https://github.com/davatorium/rofi)                             |
+|        Launcher         |                            [Rofi](https://github.com/davatorium/rofi)*                            |
 |      File manager       | [Nemo](https://github.com/linuxmint/nemo) (GUI), [ranger](https://github.com/ranger/ranger) (TUI) |
-|       Fancy info*       |                        [neofetch](https://github.com/dylanaraps/neofetch)                         |
+|       Fancy info        |                        [neofetch](https://github.com/dylanaraps/neofetch)*                        |
 |      Media player       |                   [VLC](https://www.videolan.org/vlc/), [mpv](https://mpv.io/)                    |
 |         Torrent         |                               [Deluge](https://deluge-torrent.org/)                               |
 | Bluetooth configuration |                        [Blueberry](https://github.com/linuxmint/blueberry)                        |
@@ -33,7 +33,7 @@ These are the software that I use on a daily basis, some of them are configured 
 |     ls replacement      |                               [exa](https://github.com/ogham/exa)*                                |
 |  Retrieve system info   |                           [psutil](https://pypi.org/project/psutil/)**                            |
 
-\* Some dotfiles use these programs to configure other apps (e.g. The zsh prompt will be different if kitty is not used)
+\* Some dotfiles reference these programs to configure other apps (e.g. The zsh prompt will be different if kitty is not used)
 \*\* Required for my qtile bar
 
 ### Themes, plugins, add-ons, etc...
@@ -62,3 +62,9 @@ Expected to be cloned into $HOME/.zsh_plugins (except for powerlevel10k, which b
 * [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): Prettier formatter integration
 * [Vite](https://marketplace.visualstudio.com/items?itemName=antfu.vite): Vite integration
 * [Hocus Pocus](https://marketplace.visualstudio.com/items?itemName=nicoespeon.hocus-pocus): Some neat stuff for TypeScript
+
+#### Other:
+
+* GTK+ Theme: [Dracula Theme](https://www.pling.com/p/1687249).
+* GTK+ Icon Theme: [Papirus-dark](https://www.pling.com/p/1166289/)
+* Cursor Theme: [Dracula cursors](https://www.pling.com/p/1669262/)
