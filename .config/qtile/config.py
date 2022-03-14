@@ -64,6 +64,7 @@ def backlight_down(qtile):
 
 mod = "mod4"
 terminal = "kitty"
+editor = "code"
 
 keys = [
     # A list of available commands that can be bound to keys can be found
@@ -108,9 +109,12 @@ keys = [
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    
+
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     Key([mod], "p", lazy.spawn("rofi -show drun -show-icons"),
         desc="Run an application using rofi"),
+    Key([mod], "e", lazy.spawn("code")),
 
     # Default keyboard functions
     Key([], "XF86MonBrightnessUp", backlight_up(),
@@ -152,7 +156,8 @@ layouts = [
     # border_width=1),
     layout.Tile(add_after_last=True,
                 border_focus=dracula_colors["purple"],
-                border_normal=dracula_colors["background"]),
+                border_normal=dracula_colors["background"],
+                margin=7),
     layout.Max(),
     layout.Floating(),
     # Try more layouts by unleashing below layouts.
@@ -226,8 +231,6 @@ class MyBattery(widget.Battery):
 
 screens = [
     Screen(
-        wallpaper="/usr/share/backgrounds/linuxmint-ulyssa/junghopark_purple.jpg",
-        wallpaper_mode='fill',
         top=bar.Bar(
             [
                 widget.Sep(foreground=dracula_colors["background"]),
