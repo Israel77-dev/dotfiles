@@ -76,11 +76,12 @@ keys = [
     Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
     Key([mod], "space", lazy.layout.next(),
         desc="Move window focus to other window"),
+    Key([mod, "shift"], "space", lazy.layout.flip()),
     # Move windows between left/right columns or move up/down in current stack.
     # Moving out of range in Columns layout will create new column.
-    Key([mod, "shift"], "h", lazy.layout.shuffle_left(),
+    Key([mod, "shift"], "h", lazy.layout.swap_left(),
         desc="Move window to the left"),
-    Key([mod, "shift"], "l", lazy.layout.shuffle_right(),
+    Key([mod, "shift"], "l", lazy.layout.swap_right(),
         desc="Move window to the right"),
     Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
     Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
@@ -92,7 +93,10 @@ keys = [
         desc="Grow window to the right"),
     Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
     Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
+    Key([mod], "i", lazy.layout.grow()),
+    Key([mod], "m", lazy.layout.shrink()),
     Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
+    Key([mod], "o", lazy.layout.normalize()),
     # Toggle between split and unsplit sides of stack.
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
@@ -154,6 +158,12 @@ for i in groups:
 layouts = [
     # layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"],
     # border_width=1),
+    layout.MonadTall(border_focus=dracula_colors["purple"],
+                border_normal=dracula_colors["background"]
+        ),
+    layout.MonadWide(border_focus=dracula_colors["purple"],
+                border_normal=dracula_colors["background"]
+        ),
     layout.Tile(add_after_last=True,
                 border_focus=dracula_colors["purple"],
                 border_normal=dracula_colors["background"],
@@ -164,8 +174,6 @@ layouts = [
     # layout.Stack(num_stacks=2),
     # layout.Bsp(),
     # layout.Matrix(),
-    # layout.MonadTall(),
-    # layout.MonadWide(),
     # layout.RatioTile(),
     # layout.TreeTab(),
     # layout.VerticalTile(),
