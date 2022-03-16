@@ -81,3 +81,5 @@ alias dotf='git --git-dir=$HOME/.dotfiles --work-tree=$HOME' # Dotfiles manageme
 
 # Syntax-highlighting plugin must be at the end of the file
 source "$HOME/.zsh_plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"  
+
+alias nv=nvim
