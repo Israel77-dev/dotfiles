@@ -16,7 +16,7 @@ These are the software that I use on a daily basis, some of them are configured 
 |    Terminal emulator    |                            [kitty](https://sw.kovidgoyal.net/kitty/)*                             |
 |     Source control      |                                   [Git](https://git-scm.com/)*                                    |
 |       Text Editor       |                                    [Vim](https://www.vim.org/)                                    |
-|           IDE           |                             [VSCode](https://code.visualstudio.com/)                              |
+|           IDE           |             [VSCode](https://code.visualstudio.com/), [NeoVim](https://www.neovim.io)             |
 |       Web Browser       |           [Firefox Developer Edition](https://www.mozilla.org/pt-BR/firefox/developer)            |
 |        Launcher         |                            [Rofi](https://github.com/davatorium/rofi)*                            |
 |      File manager       | [Nemo](https://github.com/linuxmint/nemo) (GUI), [ranger](https://github.com/ranger/ranger) (TUI) |
