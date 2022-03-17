@@ -1,3 +1,5 @@
+# Use vim bindings
+bindkey -v
 
 # Initialization code that may require console input (password prompts, [y/n]
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
