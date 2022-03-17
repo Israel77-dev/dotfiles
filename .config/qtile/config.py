@@ -248,6 +248,7 @@ screens = [
                     highlight_color=dracula_colors["background_focus"],
                     this_screen_border=dracula_colors['cyan'],
                     this_current_screen_border=dracula_colors['cyan'],
+                    urgent_border=dracula_colors['red'],
                     borderwidth=2),
                 widget.Systray(),
                 # "Center"
