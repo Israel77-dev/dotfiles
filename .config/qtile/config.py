@@ -64,7 +64,8 @@ def backlight_down(qtile):
 
 mod = "mod4"
 terminal = "kitty"
-editor = "code"
+editor = "nvim"
+browser = "firefox-developer"
 
 keys = [
     # A list of available commands that can be bound to keys can be found
@@ -115,10 +116,11 @@ keys = [
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     
 
-    Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    Key([mod], "r", lazy.spawn("rofi -show run"), desc="Spawn a command using rofi"),
     Key([mod], "p", lazy.spawn("rofi -show drun -show-icons"),
         desc="Run an application using rofi"),
-    Key([mod], "e", lazy.spawn("code")),
+    Key([mod], "e", lazy.spawn(editor), desc="Open the text editor"),
+    Key([mod], "b", lazy.spawn(browser), desc="Open web browser"),
 
     # Default keyboard functions
     Key([], "XF86MonBrightnessUp", backlight_up(),

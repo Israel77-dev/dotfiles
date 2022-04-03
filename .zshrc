@@ -1,6 +1,3 @@
-# Use vim bindings
-bindkey -v
-
 # Initialization code that may require console input (password prompts, [y/n]
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -80,8 +77,12 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 alias ls="exa -al --color=always --group-directories-first"
 alias cls='clear && neofetch'
 alias dotf='git --git-dir=$HOME/.dotfiles --work-tree=$HOME' # Dotfiles management via git
+alias nv=nvim
+
+# Use vim bindings
+bindkey -v
 
 # Syntax-highlighting plugin must be at the end of the file
 source "$HOME/.zsh_plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"  
 
-alias nv=nvim
+
