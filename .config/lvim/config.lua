@@ -103,43 +103,68 @@ lvim.builtin.treesitter.highlight.enabled = true
 --   buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 -- end
 
--- -- set a formatter, this will override the language server formatting capabilities (if it exists)
--- local formatters = require "lvim.lsp.null-ls.formatters"
--- formatters.setup {
---   { command = "black", filetypes = { "python" } },
---   { command = "isort", filetypes = { "python" } },
---   {
---     -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
---     command = "prettier",
---     ---@usage arguments to pass to the formatter
---     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
---     extra_args = { "--print-with", "100" },
---     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
---     filetypes = { "typescript", "typescriptreact" },
---   },
--- }
+-- set a formatter, this will override the language server formatting capabilities (if it exists)
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  { command = "black", filetypes = { "python" } },
+  { command = "isort", filetypes = { "python" } },
+  {
+    -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
+    command = "prettier",
+    ---@usage arguments to pass to the formatter
+    -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
+    extra_args = { "--print-width", "100" },
+    ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
+    filetypes = { "typescript", "typescriptreact" },
+  },
+}
 
--- -- set additional linters
--- local linters = require "lvim.lsp.null-ls.linters"
--- linters.setup {
---   { command = "flake8", filetypes = { "python" } },
---   {
---     -- each linter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
---     command = "shellcheck",
---     ---@usage arguments to pass to the formatter
---     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
---     extra_args = { "--severity", "warning" },
---   },
---   {
---     command = "codespell",
---     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
---     filetypes = { "javascript", "python" },
---   },
--- }
+-- set additional linters
+local linters = require "lvim.lsp.null-ls.linters"
+linters.setup {
+  {
+    command = "eslint",
+    ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
+    filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
+  },
+}
 
 -- Additional Plugins
 lvim.plugins = {
-    {"dracula/vim"},
+  {"dracula/vim"},
+  {"altercation/vim-colors-solarized"},
+  {"joshdick/onedark.vim"},
+  {
+    "norcalli/nvim-colorizer.lua",
+      config = function()
+        require("colorizer").setup({ "*" }, {
+            RGB = true, -- #RGB hex codes
+            RRGGBB = true, -- #RRGGBB hex codes
+            RRGGBBAA = true, -- #RRGGBBAA hex codes
+            rgb_fn = true, -- CSS rgb() and rgba() functions
+            hsl_fn = true, -- CSS hsl() and hsla() functions
+            css = true, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+            css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
+            })
+    end,
+  },
+  {
+    "tpope/vim-surround",
+    keys = {"c", "d", "y"}
+  },
+  {
+    "mattn/emmet-vim"
+  },
+  {
+    "antonk52/vim-browserslist"
+  },
+  {
+    "L3MON4D3/LuaSnip",
+    config = function()
+      require('luasnip').filetype_extend("javascript", {"javascriptreact"})
+      require('luasnip').filetype_extend("javascript", {"html"})
+    end
+  }
     -- {
     --   "folke/trouble.nvim",
     --   cmd = "TroubleToggle",
