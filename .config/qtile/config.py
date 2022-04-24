@@ -28,6 +28,8 @@
 from libqtile import bar, layout, widget, hook
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
+from my_widgets import MyBacklight, MyBattery
+
 from typing import Dict
 
 from libqtile.widget.battery import BatteryState
@@ -54,12 +56,12 @@ dracula_colors: Dict = {
 
 @lazy.function
 def backlight_up(qtile):
-    subprocess.run(["xbacklight", "-inc", "10"])
+    backlight_widget.increase_brightness(10 if backlight_widget.brightness_value >= 10 else 1)
 
 
 @lazy.function
 def backlight_down(qtile):
-    subprocess.run(["xbacklight", "-dec", "10"])
+    backlight_widget.decrease_brightness(10 if backlight_widget.brightness_value > 10 else 1)
 
 
 mod = "mod4"
@@ -75,23 +77,20 @@ keys = [
     Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
     Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
     Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
-    Key([mod], "space", lazy.layout.next(),
-        desc="Move window focus to other window"),
+    Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
     Key([mod, "shift"], "space", lazy.layout.flip()),
     # Move windows between left/right columns or move up/down in current stack.
     # Moving out of range in Columns layout will create new column.
-    Key([mod, "shift"], "h", lazy.layout.swap_left(),
-        desc="Move window to the left"),
-    Key([mod, "shift"], "l", lazy.layout.swap_right(),
-        desc="Move window to the right"),
+    Key([mod, "shift"], "h", lazy.layout.swap_left(), desc="Move window to the left"),
+    Key([mod, "shift"], "l", lazy.layout.swap_right(), desc="Move window to the right"),
     Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
     Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
     # Grow windows. If current window is on the edge of screen and direction
     # will be to screen edge - window would shrink.
-    Key([mod, "control"], "h", lazy.layout.grow_left(),
-        desc="Grow window to the left"),
-    Key([mod, "control"], "l", lazy.layout.grow_right(),
-        desc="Grow window to the right"),
+    Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
+    Key(
+        [mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"
+    ),
     Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
     Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
     Key([mod], "i", lazy.layout.grow()),
@@ -114,19 +113,23 @@ keys = [
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    
-
     Key([mod], "r", lazy.spawn("rofi -show run"), desc="Spawn a command using rofi"),
-    Key([mod], "p", lazy.spawn("rofi -show drun -show-icons"),
-        desc="Run an application using rofi"),
+    Key(
+        [mod],
+        "p",
+        lazy.spawn("rofi -show drun -show-icons"),
+        desc="Run an application using rofi",
+    ),
     Key([mod], "e", lazy.spawn(editor), desc="Open the text editor"),
     Key([mod], "b", lazy.spawn(browser), desc="Open web browser"),
-
     # Default keyboard functions
-    Key([], "XF86MonBrightnessUp", backlight_up(),
-        desc="Increase monitor brightness"),
-    Key([], "XF86MonBrightnessDown", backlight_down(),
-        desc="Decrease monitor brightness"),
+    Key([], "XF86MonBrightnessUp", backlight_up(), desc="Increase monitor brightness"),
+    Key(
+        [],
+        "XF86MonBrightnessDown",
+        backlight_down(),
+        desc="Decrease monitor brightness",
+    ),
 ]
 
 groups = [Group(i) for i in "123456789"]
@@ -147,8 +150,7 @@ for i in groups:
                 [mod, "shift"],
                 i.name,
                 lazy.window.togroup(i.name, switch_group=True),
-                desc="Switch to & move focused window to group {}".format(
-                    i.name),
+                desc="Switch to & move focused window to group {}".format(i.name),
             ),
             # Or, use below if you prefer not to switch to that group.
             # # mod1 + shift + letter of group = move focused window to group
@@ -160,16 +162,20 @@ for i in groups:
 layouts = [
     # layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"],
     # border_width=1),
-    layout.MonadTall(border_focus=dracula_colors["purple"],
-                border_normal=dracula_colors["background"]
-        ),
-    layout.MonadWide(border_focus=dracula_colors["purple"],
-                border_normal=dracula_colors["background"]
-        ),
-    layout.Tile(add_after_last=True,
-                border_focus=dracula_colors["purple"],
-                border_normal=dracula_colors["background"],
-                margin=7),
+    layout.MonadTall(
+        border_focus=dracula_colors["purple"],
+        border_normal=dracula_colors["background"],
+    ),
+    layout.MonadWide(
+        border_focus=dracula_colors["purple"],
+        border_normal=dracula_colors["background"],
+    ),
+    layout.Tile(
+        add_after_last=True,
+        border_focus=dracula_colors["purple"],
+        border_normal=dracula_colors["background"],
+        margin=7,
+    ),
     layout.Max(),
     layout.Floating(),
     # Try more layouts by unleashing below layouts.
@@ -186,103 +192,127 @@ widget_defaults = dict(
     font="FiraCode Nerd Font Mono",
     fontsize=12,
     padding=3,
-    background=dracula_colors["background"]
+    background=dracula_colors["background"],
 )
 extension_defaults = widget_defaults.copy()
 
 # Custom widgets
 
 
-class MyBacklight(widget.Backlight):
-    def poll(self) -> str:
-        info = self._get_info()
-        if info is False:
-            return '---'
-        no = int(info * 100)
-        char = '☼'
-        #self.layout.colour = color_alert
-        return '{} {}%'.format(char, no)  # chr(0x1F50B))
+# class MyBacklight(widget.Backlight):
+#     def poll(self) -> str:
+#         info = self._get_info()
+#         if info is False:
+#             return "---"
+#         no = int(info * 100)
+#         char = "☼"
+#         # self.layout.colour = color_alert
+#         return "{} {}%".format(char, no)  # chr(0x1F50B))
 
 
-class MyBattery(widget.Battery):
-    def poll(self) -> str:
-        status = self._battery.update_status()
-        
-        percent = status.percent
-        symbol = ""
-        charging = ""
+# class MyBattery(widget.Battery):
+#     def poll(self) -> str:
+#         status = self._battery.update_status()
 
-        if status.state == BatteryState.CHARGING:
-            charging = "ﮣ"
+#         percent = status.percent
+#         symbol = ""
+#         charging = ""
 
-        if percent >= .95:
-            symbol = ""
-        elif percent >= .90:
-            symbol = ""
-        elif percent >= .80:
-            symbol = ""
-        elif percent >= .70:
-            symbol = ""
-        elif percent >= .60:
-            symbol = ""
-        elif percent >= .50:
-            symbol = ""
-        elif percent >= .40:
-            symbol = ""
-        elif percent >= .30:
-            symbol = ""
-        elif percent >= .20:
-            symbol = ""
-        else:
-            symbol = ""
+#         if status.state == BatteryState.CHARGING:
+#             charging = "ﮣ"
 
-        return "{} {:.0f}% {}".format(symbol, percent * 100, charging)
+#         if percent >= 0.95:
+#             symbol = ""
+#         elif percent >= 0.90:
+#             symbol = ""
+#         elif percent >= 0.80:
+#             symbol = ""
+#         elif percent >= 0.70:
+#             symbol = ""
+#         elif percent >= 0.60:
+#             symbol = ""
+#         elif percent >= 0.50:
+#             symbol = ""
+#         elif percent >= 0.40:
+#             symbol = ""
+#         elif percent >= 0.30:
+#             symbol = ""
+#         elif percent >= 0.20:
+#             symbol = ""
+#         else:
+#             symbol = ""
 
+#         return "{} {:.0f}% {}".format(symbol, percent * 100, charging)
+
+
+group_box_widget = widget.GroupBox(
+    highlight_method="line",
+    highlight_color=dracula_colors["background_focus"],
+    this_screen_border=dracula_colors["cyan"],
+    this_current_screen_border=dracula_colors["cyan"],
+    urgent_border=dracula_colors["red"],
+    borderwidth=2,
+)
+
+clock_widget = widget.Clock(
+    format="<b> %d/%m | %A | %H:%M %p </b>",
+    background=[
+        dracula_colors["comment"],
+        dracula_colors["background_focus"],
+    ],
+    padding=10,
+)
+
+cpu_widget = widget.CPU(
+    format=": {load_percent}%",
+    foreground=dracula_colors["orange"],
+    padding=5,
+)
+memory_widget = widget.Memory(
+    format=":{MemUsed: .1f}{mm}/{MemTotal: .1f}{mm}",
+    measure_mem="G",
+    foreground=dracula_colors["green"],
+    padding=5,
+)
+
+# NOTE: Check your computer backlight service on /sys/class/backlight
+backlight_widget = MyBacklight(
+    backlight_name="intel_backlight",
+    change_command=None,
+    foreground=dracula_colors["yellow"],
+    # background=[dracula_colors['yellow'], dracula_colors['background']],
+    padding=5,
+)
+
+battery_widget = MyBattery(foreground=dracula_colors["cyan"])
+
+exit_widget = widget.QuickExit(
+    default_text="⏻",
+    fontsize=16,
+    background=dracula_colors["background"],
+    foreground=dracula_colors["red"],
+    padding=5,
+)
 
 screens = [
     Screen(
         top=bar.Bar(
             [
                 widget.Sep(foreground=dracula_colors["background"]),
-                widget.CurrentLayout(),
-                widget.GroupBox(
-                    highlight_method="line",
-                    highlight_color=dracula_colors["background_focus"],
-                    this_screen_border=dracula_colors['cyan'],
-                    this_current_screen_border=dracula_colors['cyan'],
-                    urgent_border=dracula_colors['red'],
-                    borderwidth=2),
+                group_box_widget,
+                widget.CurrentLayout(fmt=" |{}| "),
                 widget.Systray(),
                 # "Center"
                 widget.Spacer(),
-                widget.Clock(
-                    format="<b> %d/%m | %A | %H:%M %p </b>",
-                    background=[dracula_colors["comment"], dracula_colors["background_focus"]],
-                    padding=10),
+                clock_widget,
                 widget.Spacer(),
                 # Right side
-                widget.CPU(format=": {load_percent}%",
-                           foreground=dracula_colors["orange"],
-                           padding=5),
-                widget.Memory(
-                    format=":{MemUsed: .1f}{mm}/{MemTotal: .1f}{mm}",
-                    measure_mem="G",
-                    foreground=dracula_colors["green"],
-                    padding=5),
-                # NOTE: Check your computer backlight service on /sys/class/backlight
-                MyBacklight(
-                    backlight_name="intel_backlight",
-                    foreground=dracula_colors['yellow'],
-                    # background=[dracula_colors['yellow'], dracula_colors['background']],
-                    padding=5),
-                MyBattery(foreground=dracula_colors['cyan']),
-                widget.QuickExit(
-                    default_text="⏻",
-                    fontsize=16,
-                    background=dracula_colors["background"],
-                    foreground=dracula_colors["red"],
-                    padding = 5),
-                widget.Sep(foreground=dracula_colors["background"])
+                cpu_widget,
+                memory_widget,
+                backlight_widget,
+                battery_widget,
+                exit_widget,
+                widget.Sep(foreground=dracula_colors["background"]),
             ],
             24,
             # background="#000000"
@@ -295,10 +325,15 @@ screens = [
 
 # Drag floating layouts.
 mouse = [
-    Drag([mod], "Button1", lazy.window.set_position_floating(),
-         start=lazy.window.get_position()),
-    Drag([mod], "Button3", lazy.window.set_size_floating(),
-         start=lazy.window.get_size()),
+    Drag(
+        [mod],
+        "Button1",
+        lazy.window.set_position_floating(),
+        start=lazy.window.get_position(),
+    ),
+    Drag(
+        [mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()
+    ),
     Click([mod], "Button2", lazy.window.bring_to_front()),
 ]
 
@@ -336,7 +371,8 @@ wl_input_rules = None
 
 @hook.subscribe.startup
 def autostart():
-    start_script = os.path.expanduser('~/.config/qtile/autostart.sh')
+    start_script = os.path.expanduser("~/.config/qtile/autostart.sh")
     subprocess.run([start_script])
+
 
 wmname = "\\e[33;49mQTile"
