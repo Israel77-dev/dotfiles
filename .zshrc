@@ -77,12 +77,13 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 alias ls="exa -al --color=always --group-directories-first"
 alias cls='clear && neofetch'
 alias dotf='git --git-dir=$HOME/.dotfiles --work-tree=$HOME' # Dotfiles management via git
+alias dotfs='dotf status -uno'
 alias nv=nvim
 
 # Use vim bindings
 bindkey -v
 
 # Syntax-highlighting plugin must be at the end of the file
-source "$HOME/.zsh_plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"  
+source "$HOME/.zsh/zsh-fsh/fast-syntax-highlighting.plugin.zsh"  
 
 
